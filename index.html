@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mini Google 1998 🏄</title>
+  <style>
+    /* ===== CUTE PASTEL THEME ===== */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Comic Sans MS", "Trebuchet MS", sans-serif;
+      background: #FFF8F0;
+      color: #3A3A3A;
+      padding: 24px 16px;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* --- Floating background bubbles --- */
+    .bubbles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      /* clicks pass through */
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .bubble {
+      position: absolute;
+      bottom: -80px;
+      border-radius: 50%;
+      opacity: 0.45;
+      animation: floatUp linear infinite;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0) scale(1);
+        opacity: 0.4;
+      }
+
+      10% {
+        opacity: 0.55;
+      }
+
+      50% {
+        transform: translateY(-50vh) scale(1.05);
+      }
+
+      100% {
+        transform: translateY(-110vh) scale(0.9);
+        opacity: 0;
+      }
+    }
+
+    /* gentle side-to-side wobble layered on top */
+    .bubble.wobble1 {
+      animation: floatUp linear infinite, sway1 ease-in-out infinite;
+    }
+
+    .bubble.wobble2 {
+      animation: floatUp linear infinite, sway2 ease-in-out infinite;
+    }
+
+    @keyframes sway1 {
+
+      0%,
+      100% {
+        margin-left: 0;
+      }
+
+      50% {
+        margin-left: 30px;
+      }
+    }
+
+    @keyframes sway2 {
+
+      0%,
+      100% {
+        margin-left: 0;
+      }
+
+      50% {
+        margin-left: -25px;
+      }
+    }
+
+    /* Make sure all content sits above the bubbles */
+    .logo,
+    .logo-sub,
+    .search-area,
+    .pills,
+    .results,
+    .surfer-area,
+    .footer {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* --- Logo --- */
+    .logo {
+      text-align: center;
+      font-size: 2.8em;
+      font-weight: bold;
+      margin: 16px 0 4px;
+      line-height: 1.2;
+    }
+
+    .logo-sub {
+      text-align: center;
+      font-size: 0.95em;
+      color: #B0A0B8;
+      margin-bottom: 20px;
+    }
+
+    /* --- Search bar --- */
+    .search-area {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 0 auto 14px;
+      max-width: 520px;
+    }
+
+    .search-area input {
+      flex: 1;
+      padding: 13px 22px;
+      border: 3px solid #C5B3E6;
+      border-radius: 25px;
+      font-size: 1.1em;
+      font-family: inherit;
+      outline: none;
+      background: #fff;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .search-area input:focus {
+      border-color: #FFB5C2;
+      box-shadow: 0 0 14px rgba(255, 181, 194, 0.4);
+    }
+
+    .search-btn {
+      padding: 13px 26px;
+      border: 3px solid #A8E6CF;
+      border-radius: 25px;
+      background: #A8E6CF;
+      font-size: 1.1em;
+      font-family: inherit;
+      font-weight: bold;
+      color: #3A3A3A;
+      cursor: pointer;
+      transition: transform 0.1s, background 0.15s;
+    }
+
+    .search-btn:hover {
+      background: #90DABB;
+      border-color: #90DABB;
+    }
+
+    .search-btn:active {
+      transform: scale(0.93);
+    }
+
+    /* --- Pill example buttons --- */
+    .pills {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 0 auto 24px;
+      flex-wrap: wrap;
+    }
+
+    .pill {
+      padding: 7px 18px;
+      border: 2.5px solid #B5D9F5;
+      border-radius: 20px;
+      background: #E6F3FF;
+      font-family: inherit;
+      font-size: 0.95em;
+      cursor: pointer;
+      transition: transform 0.12s, background 0.15s;
+      color: #4A6A8A;
+      font-weight: bold;
+    }
+
+    .pill:hover {
+      background: #D0EAFF;
+    }
+
+    .pill:active {
+      transform: scale(0.92);
+    }
+
+    /* --- Two-column results grid --- */
+    .results {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    @media (max-width: 650px) {
+      .results {
+        grid-template-columns: 1fr;
+      }
+
+      .logo {
+        font-size: 2em;
+      }
+    }
+
+    /* --- Column titles --- */
+    .col-title {
+      text-align: center;
+      font-size: 1.25em;
+      font-weight: bold;
+      margin-bottom: 12px;
+      padding: 9px 0;
+      border-radius: 16px;
+    }
+
+    .col-title.old {
+      background: #FFE0E8;
+      color: #B05070;
+    }
+
+    .col-title.surfer {
+      background: #D8F0FF;
+      color: #4080A8;
+    }
+
+    /* --- Result cards --- */
+    .card {
+      background: #fff;
+      border: 3px solid #E8DFF0;
+      border-radius: 18px;
+      padding: 14px 16px;
+      margin-bottom: 14px;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+      transition: transform 0.22s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-4px) scale(1.012);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: #E8E0F0;
+      font-weight: bold;
+      font-size: 0.88em;
+      margin-right: 10px;
+      flex-shrink: 0;
+      color: #5A4A6A;
+      border: 2px solid #D0C0E0;
+    }
+
+    /* Gold / Silver / Bronze for top 3 */
+    .badge.r1 {
+      background: #FFF0B0;
+      border-color: #E8D080;
+      color: #7A6520;
+    }
+
+    .badge.r2 {
+      background: #E0E0E0;
+      border-color: #C8C8C8;
+      color: #555;
+    }
+
+    .badge.r3 {
+      background: #FDDCB5;
+      border-color: #E0C098;
+      color: #7A5530;
+    }
+
+    .url {
+      color: #8888CC;
+      font-size: 0.85em;
+      word-break: break-all;
+    }
+
+    .text-preview {
+      margin: 8px 0;
+      font-size: 0.9em;
+      line-height: 1.5;
+      color: #444;
+    }
+
+    .score {
+      font-size: 0.85em;
+      color: #909090;
+      font-style: italic;
+    }
+
+    mark {
+      background: #FFF3A8;
+      border-radius: 4px;
+      padding: 1px 3px;
+      color: #3A3A3A;
+    }
+
+    /* --- "No results" message --- */
+    .no-results {
+      text-align: center;
+      grid-column: 1 / -1;
+      padding: 44px 24px;
+      font-size: 1.15em;
+      color: #B0A0B8;
+      background: #fff;
+      border-radius: 22px;
+      border: 3px dashed #E0D0F0;
+      line-height: 1.7;
+    }
+
+    /* --- Surfer controls --- */
+    .surfer-area {
+      text-align: center;
+      margin: 24px 0 8px;
+    }
+
+    .rerun-btn {
+      padding: 10px 24px;
+      border: 3px solid #FFB5C2;
+      border-radius: 22px;
+      background: #FFE0E8;
+      font-family: inherit;
+      font-size: 1em;
+      font-weight: bold;
+      color: #A05070;
+      cursor: pointer;
+      transition: transform 0.1s, background 0.15s;
+    }
+
+    .rerun-btn:hover {
+      background: #FFD0DC;
+    }
+
+    .rerun-btn:active {
+      transform: scale(0.92);
+    }
+
+    .surfer-status {
+      margin-top: 8px;
+      font-size: 0.9em;
+      color: #90B0D0;
+      min-height: 1.4em;
+    }
+
+    /* --- Footer --- */
+    .footer {
+      text-align: center;
+      margin-top: 30px;
+      padding-top: 14px;
+      border-top: 2px dashed #E8E0F0;
+      font-size: 0.82em;
+      color: #B8B0C0;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Floating pastel bubbles (generated by JS) -->
+  <div class="bubbles" id="bubbles"></div>
+
+  <!-- Logo (coloured by JS below) -->
+  <div class="logo" id="logo"></div>
+  <div class="logo-sub">a tiny search engine for your AI lab 🏄</div>
+
+  <!-- Search bar -->
+  <div class="search-area">
+    <input type="text" id="searchInput" placeholder="Type a word and search…" autofocus>
+    <button class="search-btn" onclick="doSearch()">Search 🔍</button>
+  </div>
+
+  <!-- Example pill buttons -->
+  <div class="pills">
+    <button class="pill" onclick="pillSearch('pizza')">🍕 pizza</button>
+    <button class="pill" onclick="pillSearch('cricket')">🏏 cricket</button>
+    <button class="pill" onclick="pillSearch('movie')">🎬 movie</button>
+    <button class="pill" onclick="pillSearch('exam')">📝 exam</button>
+  </div>
+
+  <!-- Search results appear here -->
+  <div class="results" id="results"></div>
+
+  <!-- Rerun surfer button -->
+  <div class="surfer-area">
+    <button class="rerun-btn" onclick="rerunSurfer()">Run the surfer again 🔄</button>
+    <div class="surfer-status" id="surferStatus"></div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">100,000 moves · 15% bored jumps</div>
+
+  <script>
+    // ============================================================
+    // STEP 1 — DATA
+    // Each object is one web page. "page" = its number,
+    // "url" = address, "text" = content, "linksTo" = outgoing
+    // links as a ";"-separated string of page numbers.
+    // ============================================================
+    var PAGES = [
+      { page: 1, url: "pizzaspam.example/buy", text: "Pizza pizza PIZZA pizza! Best pizza deals, pizza coupons, pizza pizza pizza now!", linksTo: "2" },
+      { page: 2, url: "nonnaspizza.example", text: "Nonna\u2019s guide to pizza: thin crust, wood fire, and the secret of good dough. A pizza should never be rushed.", linksTo: "3;20" },
+      { page: 3, url: "cheesefans.example", text: "A cheese lover\u2019s page. Mozzarella makes every pizza better, and so does basil.", linksTo: "2;4" },
+      { page: 4, url: "pizzaparty.example", text: "Planning a birthday pizza party? Order two pizza boxes per five friends and bring a pizza cutter.", linksTo: "2;1" },
+      { page: 5, url: "pineapple.example", text: "Does pineapple belong on pizza? Our readers argue about it every week. The debate never ends.", linksTo: "2;4;3" },
+      { page: 6, url: "pizzas.example", text: "We sell pizzas, only pizzas, many pizzas. Nothing but pizzas here.", linksTo: "2" },
+      { page: 7, url: "cricketnews.example", text: "Cricket scores live: the cricket match starts at nine and the crowd is already loud.", linksTo: "8;9" },
+      { page: 8, url: "bigbash.example", text: "The history of cricket: from village greens to huge stadiums. Cricket is loved by millions.", linksTo: "7;10;9" },
+      { page: 9, url: "batandball.example", text: "How to bowl a googly. Practice with a tennis ball and a bat in the park before real cricket.", linksTo: "8;7" },
+      { page: 10, url: "cricketspam.example", text: "Cricket cricket cricket bat cricket ball cricket shop cricket cricket!", linksTo: "8" },
+      { page: 11, url: "snackstand.example", text: "Cricket fans need snacks. Samosas and chai are the best match day food, and sometimes pizza.", linksTo: "2;8" },
+      { page: 12, url: "movienight.example", text: "Movie night guide: popcorn, blankets, and one great movie that makes everyone laugh.", linksTo: "13;14;2" },
+      { page: 13, url: "filmclub.example", text: "The college film club picks a classic movie every Friday. Bring a friend.", linksTo: "12;14" },
+      { page: 14, url: "cinemareviews.example", text: "Our movie reviews are honest. This movie was too long, but the music was lovely.", linksTo: "12;13;15" },
+      { page: 15, url: "movieads.example", text: "Movie movie movie tickets! Cheap movie deals and a free movie poster.", linksTo: "12" },
+      { page: 16, url: "examtips.example", text: "Exam tips for first years: sleep well, revise early, and do not panic before the exam.", linksTo: "17;18;19" },
+      { page: 17, url: "studybuddy.example", text: "Make a study plan a week before your exam. A short walk helps your brain.", linksTo: "16;18" },
+      { page: 18, url: "pastpapers.example", text: "Past papers are the best way to prepare. Try one exam paper every day.", linksTo: "16;17;19" },
+      { page: 19, url: "examspam.example", text: "Exam exam exam answers! Buy exam notes. Exam exam help!", linksTo: "16" },
+      { page: 20, url: "deadend.example", text: "You reached the end of the internet. Nothing links out of here, but there is a pizza emoji.", linksTo: "" },
+      { page: 21, url: "lostlinks.example", text: "This old page links to pages that no longer exist. A sad movie about a broken link.", linksTo: "99;12" }
+    ];
+
+    // ============================================================
+    // STEP 2 — PREPARE LINKS & "LINKS IN" COUNT
+    // Parse each page's outgoing links, throw away any that point
+    // to pages that don't exist, and count incoming links.
+    // ============================================================
+    var validPages = new Set(PAGES.map(function (p) { return p.page; }));
+    var pageMap = {};   // quick lookup: page number → page object
+
+    PAGES.forEach(function (p) {
+      // Split "3;20" → [3, 20], keep only existing page numbers
+      p.links = p.linksTo
+        ? p.linksTo.split(";").map(Number).filter(function (n) { return validPages.has(n); })
+        : [];
+      pageMap[p.page] = p;
+    });
+
+    // Count how many pages link TO each page
+    var linksIn = {};
+    PAGES.forEach(function (p) { linksIn[p.page] = 0; });
+    PAGES.forEach(function (p) {
+      p.links.forEach(function (t) { linksIn[t] = (linksIn[t] || 0) + 1; });
+    });
+
+    // ============================================================
+    // STEP 3 — OLD WAY RANKING (1997): count whole-word matches
+    // "pizza" matches "Pizza!" but NOT "pizzas"
+    // ============================================================
+    function countWord(text, word) {
+      // Escape any special regex characters in the user's word
+      var safe = word.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      // \b = word boundary, so only whole words match
+      var regex = new RegExp("\\b" + safe + "\\b", "gi");
+      var m = text.match(regex);
+      return m ? m.length : 0;
+    }
+
+    // ============================================================
+    // STEP 4 — SURFER WAY (1998): random surfer / PageRank idea
+    // Walk 100,000 steps. Each step: 15% chance to jump to any
+    // page at random ("bored"); otherwise follow a random link.
+    // If there are no links, jump to a random page.
+    // ============================================================
+    var surferScores = {};   // page number → visit percentage string
+
+    function runSurfer() {
+      var n = PAGES.length;
+      var visits = {};
+      PAGES.forEach(function (p) { visits[p.page] = 0; });
+
+      // Start on a random page
+      var cur = PAGES[Math.floor(Math.random() * n)];
+
+      // Make 100,000 moves
+      for (var i = 0; i < 100000; i++) {
+        visits[cur.page]++;
+
+        if (Math.random() < 0.15 || cur.links.length === 0) {
+          // Bored OR dead-end → jump to any random page
+          cur = PAGES[Math.floor(Math.random() * n)];
+        } else {
+          // Follow one random outgoing link
+          var target = cur.links[Math.floor(Math.random() * cur.links.length)];
+          cur = pageMap[target];
+        }
+      }
+
+      // Convert visit counts to percentages with 1 decimal place
+      // e.g. 5300 visits → 5300/100000*100 = 5.3%
+      PAGES.forEach(function (p) {
+        surferScores[p.page] = (visits[p.page] / 1000).toFixed(1);
+      });
+    }
+
+    // Run the surfer once right away when the page opens
+    runSurfer();
+
+    // ============================================================
+    // STEP 5 — DRAWING THE PAGE: logo, search, and results
+    // ============================================================
+
+    // --- Paint the logo in rainbow pastel colours ---
+    (function paintLogo() {
+      var title = "Mini Google 1998";
+      var colors = ["#FF7BAC", "#9B7ED8", "#5EBD8E", "#F4B942", "#5CAEE8"];
+      var html = "";
+      var ci = 0;
+      for (var k = 0; k < title.length; k++) {
+        var ch = title[k];
+        if (ch === " ") { html += " "; continue; }
+        html += '<span style="color:' + colors[ci % colors.length] + '">' + ch + '</span>';
+        ci++;
+      }
+      html += ' <span style="font-size:0.65em">🏄</span>';
+      document.getElementById("logo").innerHTML = html;
+    })();
+
+    // --- Escape text so no HTML gets injected ---
+    function esc(str) {
+      return str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    // --- Highlight the search word with a yellow marker look ---
+    function highlight(text, word) {
+      var escaped = esc(text);
+      var safe = word.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      var regex = new RegExp("\\b(" + safe + ")\\b", "gi");
+      return escaped.replace(regex, "<mark>$1</mark>");
+    }
+
+    // --- Pick a badge CSS class for rank 1 / 2 / 3 ---
+    function badgeClass(rank) {
+      if (rank === 1) return "badge r1";
+      if (rank === 2) return "badge r2";
+      if (rank === 3) return "badge r3";
+      return "badge";
+    }
+
+    // --- Build one result card's HTML ---
+    function cardHTML(rank, page, word, scoreLabel) {
+      return '<div class="card">'
+        + '<div class="card-header">'
+        + '<span class="' + badgeClass(rank) + '">' + rank + '</span>'
+        + '<span class="url">' + esc(page.url) + '</span>'
+        + '</div>'
+        + '<div class="text-preview">' + highlight(page.text, word) + '</div>'
+        + '<div class="score">' + scoreLabel + '</div>'
+        + '</div>';
+    }
+
+    // Remember the last search word so we can refresh after re-surfing
+    var lastWord = "";
+
+    // --- Main search (called by button click or Enter) ---
+    function doSearch() {
+      var raw = document.getElementById("searchInput").value.trim();
+      if (!raw) return;                     // ignore empty input
+      var word = raw.split(/\s+/)[0];       // take only the first word
+      lastWord = word;
+      showResults(word);
+    }
+
+    // --- Pill button shortcut ---
+    function pillSearch(word) {
+      document.getElementById("searchInput").value = word;
+      lastWord = word;
+      showResults(word);
+    }
+
+    // --- Render both columns of results ---
+    function showResults(word) {
+      // Find pages that contain the word (whole-word match)
+      var matches = PAGES.filter(function (p) {
+        return countWord(p.text, word) > 0;
+      });
+
+      var box = document.getElementById("results");
+
+      // No matches? Show a fun message
+      if (matches.length === 0) {
+        box.innerHTML =
+          '<div class="no-results">'
+          + '🏄‍♂️ The surfer paddled out, waited for a wave…<br>'
+          + 'but "<b>' + esc(word) + '</b>" never showed up. 🌊<br><br>'
+          + 'Try another word!'
+          + '</div>';
+        return;
+      }
+
+      // OLD WAY: sort by word count (highest first), ties → lower page number
+      var oldList = matches.slice().sort(function (a, b) {
+        var diff = countWord(b.text, word) - countWord(a.text, word);
+        return diff !== 0 ? diff : a.page - b.page;
+      });
+
+      // SURFER WAY: sort by surfer score (highest first), ties → lower page number
+      var surfList = matches.slice().sort(function (a, b) {
+        var diff = parseFloat(surferScores[b.page]) - parseFloat(surferScores[a.page]);
+        return diff !== 0 ? diff : a.page - b.page;
+      });
+
+      // Build the two columns
+      var html = '<div class="column">'
+        + '<div class="col-title old">Old way 📚</div>';
+      oldList.forEach(function (p, i) {
+        html += cardHTML(i + 1, p, word, "Word count: " + countWord(p.text, word));
+      });
+      html += '</div>';
+
+      html += '<div class="column">'
+        + '<div class="col-title surfer">Surfer way 🏄</div>';
+      surfList.forEach(function (p, i) {
+        html += cardHTML(i + 1, p, word,
+          "Surfer score: " + surferScores[p.page] + "%"
+          + " · Links in: " + linksIn[p.page]);
+      });
+      html += '</div>';
+
+      box.innerHTML = html;
+    }
+
+    // --- Press Enter in the search box to search ---
+    document.getElementById("searchInput").addEventListener("keydown", function (e) {
+      if (e.key === "Enter") doSearch();
+    });
+
+    // --- Rerun the surfer and refresh results ---
+    function rerunSurfer() {
+      var status = document.getElementById("surferStatus");
+      status.textContent = "Surfer is surfing\u2026 🏄";
+      // setTimeout lets the browser paint the message before the heavy loop
+      setTimeout(function () {
+        runSurfer();
+        if (lastWord) showResults(lastWord);
+        status.textContent = "Done! Scores updated \u2728";
+        setTimeout(function () { status.textContent = ""; }, 2000);
+      }, 50);
+    }
+  </script>
+
+  <script>
+    // ============================================================
+    // BONUS — Floating pastel bubbles in the background
+    // Creates ~18 soft circles that float upward and wobble.
+    // ============================================================
+    (function spawnBubbles() {
+      var container = document.getElementById("bubbles");
+      var colors = [
+        "#FFB5C2", "#C5B3E6", "#A8E6CF", "#FFE59D",
+        "#87CEEB", "#F0C8E8", "#B5EAD7", "#FFDAC1"
+      ];
+      var wobbles = ["", "wobble1", "wobble2"];
+
+      for (var i = 0; i < 18; i++) {
+        var b = document.createElement("div");
+        var size = 20 + Math.random() * 50;               // 20–70 px
+        var dur = 10 + Math.random() * 14;                // 10–24 s float
+        var sway = 4 + Math.random() * 5;                  // 4–9 s wobble
+        var delay = Math.random() * 16;                    // stagger starts
+
+        b.className = "bubble " + wobbles[i % 3];
+        b.style.width = size + "px";
+        b.style.height = size + "px";
+        b.style.left = Math.random() * 100 + "%";
+        b.style.background = colors[i % colors.length];
+        b.style.animationDuration = dur + "s" + (wobbles[i % 3] ? ", " + sway + "s" : "");
+        b.style.animationDelay = delay + "s" + (wobbles[i % 3] ? ", " + delay + "s" : "");
+        container.appendChild(b);
+      }
+    })();
+  </script>
+</body>
+
+</html>
